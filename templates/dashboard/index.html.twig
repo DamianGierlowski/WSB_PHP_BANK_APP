@@ -9,12 +9,31 @@
 </style>
 
 <div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Number</th>
+            <th>Balance</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for account in accounts %}
+            <tr>
+                <td>{{ account.number }}</td>
+                <td>{{ account.balance }}</td>
+                <td>
+                    <a href="{{ path('app_transaction_new', {'id': account.id}) }}">Przelew</a>
+                    <a href="{{ path('app_transaction_history_expenses', {'id': account.id}) }}">Historia</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ '/Users/damiangierlowski/Documents/WSB_PHP_BANK_APP/src/Controller/DashboardController.php'|file_link(0) }}">src/Controller/DashboardController.php</a></code></li>
-        <li>Your template at <code><a href="{{ '/Users/damiangierlowski/Documents/WSB_PHP_BANK_APP/templates/dashboard/index.html.twig'|file_link(0) }}">templates/dashboard/index.html.twig</a></code></li>
-    </ul>
+    <a href="{{ path('app_account_new') }}">Create new bank account</a>
 </div>
 {% endblock %}

@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Transaction index{% endblock %}
+
+{% block body %}
+    <h1>Przychodzace</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Od</th>
+                <th>Kwota</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for transaction in transactions_recipient %}
+            <tr>
+                <td>{{ transaction.source.number }}</td>
+                <td>{{ transaction.ammount }}</td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <h1>Wychodzace</h1>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Odbiorca</th>
+            <th>Kwota</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for transaction in transactions_source %}
+            <tr>
+                <td>{{ transaction.recipient.number }}</td>
+                <td>{{ transaction.ammount }}</td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}
