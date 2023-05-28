@@ -22,8 +22,8 @@
                 <td>{{ account.number }}</td>
                 <td>{{ account.balance }}</td>
                 <td>
-                    <a href="{{ path('app_transaction_new', {'id': account.id}) }}">Przelew</a>
-                    <a href="{{ path('app_transaction_history_expenses', {'id': account.id}) }}">Historia</a>
+                    <a href="{{ path('app_transaction_new', {'id': account.id}) }}">New Transaction</a>
+                    <a href="{{ path('app_transaction_history_expenses', {'id': account.id}) }}">Transaction History</a>
                 </td>
             </tr>
         {% else %}

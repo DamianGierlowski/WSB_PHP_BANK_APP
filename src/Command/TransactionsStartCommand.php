@@ -30,10 +30,6 @@ class TransactionsStartCommand extends Command
 
     protected function configure(): void
     {
-        $this
-            ->addArgument('arg1', InputArgument::OPTIONAL, 'Argument description')
-            ->addOption('option1', null, InputOption::VALUE_NONE, 'Option description')
-        ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -45,21 +41,17 @@ class TransactionsStartCommand extends Command
         /** @var Transaction $transaction */
         foreach ($transactions as $transaction)
         {
-            $source = $transaction->getSource();
             $recipient = $transaction->getRecipient();
             $ammount = $transaction->getAmmount();
 
-            $source->subBalance($ammount);
             $recipient->addBalance($ammount);
 
             $transaction->setTransfered(true);
             $this->entityManager->persist($transaction);
-            $this->entityManager->persist($source);
             $this->entityManager->persist($recipient);
 
             $this->entityManager->flush();
         }
-
 
 
         $io->success('Transactions done');

@@ -3,13 +3,13 @@
 {% block title %}Transaction index{% endblock %}
 
 {% block body %}
-    <h1>Przychodzace</h1>
+    <h1>Income</h1>
 
     <table class="table">
         <thead>
             <tr>
-                <th>Od</th>
-                <th>Kwota</th>
+                <th>From</th>
+                <th>Amount</th>
             </tr>
         </thead>
         <tbody>
@@ -25,13 +25,13 @@
         {% endfor %}
         </tbody>
     </table>
-    <h1>Wychodzace</h1>
+    <h1>Expenses</h1>
 
     <table class="table">
         <thead>
         <tr>
-            <th>Odbiorca</th>
-            <th>Kwota</th>
+            <th>To</th>
+            <th>Amount</th>
         </tr>
         </thead>
         <tbody>
@@ -47,5 +47,5 @@
         {% endfor %}
         </tbody>
     </table>
-
+    <a href="{{ path('app_dashboard') }}">back to list</a>
 {% endblock %}

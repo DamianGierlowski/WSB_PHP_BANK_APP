@@ -14,6 +14,21 @@
         {% endblock %}
     </head>
     <body>
+    <header>
+        {% if app.user %}
+            <p>Welcome, {{ app.user.email }}!</p>
+            <a href="{{ path('app_logout') }}">Logout</a>
+        {% else %}
+            <p>Please log in.</p>
+        {% endif %}
+
+        {% for message in app.flashes('Error') %}
+            <div class="flash-notice">
+                {{ message }}
+            </div>
+        {% endfor %}
+
+    </header>
         {% block body %}{% endblock %}
     </body>
 </html>

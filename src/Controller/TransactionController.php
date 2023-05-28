@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Account;
 use App\Entity\Transaction;
 use App\Form\TransactionType;
+use App\Repository\AccountRepository;
 use App\Repository\TransactionRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,7 +16,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class TransactionController extends AbstractController
 {
 
-    #[Route('{id}/expenses', name: 'app_transaction_history_expenses')]
+    #[Route('/{id}/expenses', name: 'app_transaction_history_expenses')]
     public function index(Account $account): Response
     {
 //        dd($account);
@@ -28,7 +29,7 @@ class TransactionController extends AbstractController
 
 
     #[Route('{id}/new', name: 'app_transaction_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, Account $account, TransactionRepository $transactionRepository): Response
+    public function new(Request $request, Account $account, TransactionRepository $transactionRepository, AccountRepository $accountRepository): Response
     {
         $transaction = new Transaction();
         $form = $this->createForm(TransactionType::class, $transaction);
@@ -36,26 +37,42 @@ class TransactionController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            if ($transaction->getAmmount() === 0) {
-                $this->addFlash('Error', 'Wartosc musi byc wieksza o 0');
 
-                return $this->renderForm('transaction/new.html.twig', [
+
+            if (0 === $transaction->getAmmount()) {
+                $this->addFlash('Error', 'Amount must be higher than 0');
+
+                return $this->render('transaction/new.html.twig', [
                     'transaction' => $transaction,
                     'form' => $form,
                 ]);
             }
 
             if ($transaction->getAmmount() > $account->getBalance()) {
-                $this->addFlash('Error', 'Niewystarczajace srodki na koncie');
+                $this->addFlash('Error', 'Insufficient funds in the account');
 
-                return $this->renderForm('transaction/new.html.twig', [
+                return $this->render('transaction/new.html.twig', [
                     'transaction' => $transaction,
                     'form' => $form,
                 ]);
             }
+            $recipientNumber = $form->get('recipientNumber')->getData();
+            $recipient = $accountRepository->findOneBy(['number' => $recipientNumber]);
+            if (null === $recipient) {
+                $this->addFlash('Error', 'Recipient account dont exists in system');
+
+                return $this->render('transaction/new.html.twig', [
+                    'transaction' => $transaction,
+                    'form' => $form,
+                ]);
+            }
+
+            $account->subBalance($transaction->getAmmount());
+
             $transaction->setSource($account);
             $transaction->setTransfered(false);
-
+            $transaction->setRecipient($recipient);
+            $accountRepository->save($account);
             $transactionRepository->save($transaction, true);
 
             return $this->redirectToRoute('app_dashboard', [], Response::HTTP_SEE_OTHER);
