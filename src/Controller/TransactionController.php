@@ -16,17 +16,14 @@ use Symfony\Component\Routing\Annotation\Route;
 class TransactionController extends AbstractController
 {
 
-    #[Route('/{id}/expenses', name: 'app_transaction_history_expenses')]
+    #[Route('/{id}/history', name: 'app_transaction_history_expenses')]
     public function index(Account $account): Response
     {
-//        dd($account);
         return $this->render('transaction/index.html.twig', [
             'transactions_recipient' => $account->getRecipientTransactions(),
             'transactions_source' => $account->getSourceTransactions()
         ]);
     }
-
-
 
     #[Route('{id}/new', name: 'app_transaction_new', methods: ['GET', 'POST'])]
     public function new(Request $request, Account $account, TransactionRepository $transactionRepository, AccountRepository $accountRepository): Response
@@ -36,8 +33,6 @@ class TransactionController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
-
 
             if (0 === $transaction->getAmmount()) {
                 $this->addFlash('Error', 'Amount must be higher than 0');
@@ -66,9 +61,7 @@ class TransactionController extends AbstractController
                     'form' => $form,
                 ]);
             }
-
             $account->subBalance($transaction->getAmmount());
-
             $transaction->setSource($account);
             $transaction->setTransfered(false);
             $transaction->setRecipient($recipient);
@@ -78,7 +71,7 @@ class TransactionController extends AbstractController
             return $this->redirectToRoute('app_dashboard', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('transaction/new.html.twig', [
+        return $this->render('transaction/new.html.twig', [
             'transaction' => $transaction,
             'form' => $form,
         ]);

@@ -42,9 +42,9 @@ class TransactionsStartCommand extends Command
         foreach ($transactions as $transaction)
         {
             $recipient = $transaction->getRecipient();
-            $ammount = $transaction->getAmmount();
+            $amount = $transaction->getAmmount();
 
-            $recipient->addBalance($ammount);
+            $recipient->addBalance($amount);
 
             $transaction->setTransfered(true);
             $this->entityManager->persist($transaction);
